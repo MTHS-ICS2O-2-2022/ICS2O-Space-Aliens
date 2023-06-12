@@ -52,7 +52,7 @@ class GameScene extends Phaser.Scene {
   }
 
   create(data) {
-    this.background = this.add.image(0, 0, 'starBackground').setScale(2.0)
+    this.background = this.add.image(0, 0, 'starBackground').setScale(1.0)
     this.background.setOrigin(0, 0)
 
     this.scoreText = this.add.text(10, 10, 'Score: ' + this.score.toString(), this.scoreTextStyle)
@@ -94,7 +94,7 @@ class GameScene extends Phaser.Scene {
     const keyLeftObj = this.input.keyboard.addKey('LEFT')
     const keyRightObj = this.input.keyboard.addKey('RIGHT')
     const keySpaceObj = this.input.keyboard.addKey('SPACE')
-
+ 
     if (keyLeftObj.isDown === true) {
       this.ship.x -= 15
       if (this.ship.x < 0) {
