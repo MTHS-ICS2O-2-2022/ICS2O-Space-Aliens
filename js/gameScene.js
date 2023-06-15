@@ -22,11 +22,15 @@ class GameScene extends Phaser.Scene {
 
   constructor() {
     super({ key: 'gameScene' })
-
+    // Variables for game state and UI elements
     this.ship = null
     this.fireMissile = false
     this.score = 0
     this.scoreText = null
+    this.highscore = 0
+    this.highscoreText = null
+    this.menuSceneBackgroundImage = null
+    this.highscoreTextStyle = { font: '65px Arial', fill: '#ffffff', align: 'center' }
     this.scoreTextStyle = { font: '65px Arial', fill: '#ffffff', align: 'center' }
 
     this.gameOverText = null
@@ -40,22 +44,26 @@ class GameScene extends Phaser.Scene {
   preload() {
     console.log('Game Scene')
 
-    // images
-    this.load.image('starBackground', 'assets/shoe_store.jpg')
-    this.load.image('ship', 'assets/spaceShip.png')
+
+    //Preloaded images & Sounds from assets file 
+    this.load.image('ShoeBackground', 'assets/shoe_closet.jpg')
+    this.load.image('ship', 'assets/corgi.png')
     this.load.image('missile', 'assets/missile.png')
     this.load.image('alien', 'assets/shoe.png')
     // sound
     this.load.audio('laser', 'assets/laser1.wav')
     this.load.audio('explosion', 'assets/barrelExploding.wav')
-    this.load.audio('bomb', 'assets/bomb.wav')
+    this.load.audio('bomb', 'assets/sadtrombone.wav')
   }
 
   create(data) {
-    this.background = this.add.image(0, 0, 'starBackground').setScale(1.0)
-    this.background.setOrigin(0, 0)
+    this.menuSceneBackgroundImage = this.add.sprite(0, 0, 'ShoeBackground')
+    this.menuSceneBackgroundImage.x = 1920 / 2
+    this.menuSceneBackgroundImage.y = 1080 / 2
 
     this.scoreText = this.add.text(10, 10, 'Score: ' + this.score.toString(), this.scoreTextStyle)
+    this.highscoreText = this.add.text(10, 100, 'Highscore: ' + this.highscore.toString(), this.highscoreTextStyle)
+
 
     this.ship = this.physics.add.sprite(1920 / 2, 1080 - 100, 'ship')
 
@@ -66,7 +74,7 @@ class GameScene extends Phaser.Scene {
     this.alienGroup = this.add.group()
     this.createAlien()
 
-    // Collisions between missiles and aliens
+    // Collisions between missiles and aliens & displays score 
     this.physics.add.collider(this.missileGroup, this.alienGroup, function(missileCollide, alienCollide) {
       alienCollide.destroy()
       missileCollide.destroy()
@@ -85,27 +93,49 @@ class GameScene extends Phaser.Scene {
       shipCollide.destroy()
       this.gameOverText = this.add.text(1920 / 2, 1080 / 2, 'Game Over!\nClick to play again.', this.gameOverTextStyle).setOrigin(0.5)
       this.gameOverText.setInteractive({ useHandCursor: true })
+      // Added a Highscore functionality
+      if (this.highscore < this.score) {
+        this.highscore = this.score
+      }
+      this.score = 0
       this.gameOverText.on('pointerdown', () => this.scene.start('gameScene'))
     }.bind(this))
   }
 
   update(time, delta) {
     // called 60 times a second, hopefully!
+    // Added and X,Y movement of the dog
     const keyLeftObj = this.input.keyboard.addKey('LEFT')
     const keyRightObj = this.input.keyboard.addKey('RIGHT')
+    const keyUpObj = this.input.keyboard.addKey('UP')
+    const keyDownObj = this.input.keyboard.addKey('Down')
     const keySpaceObj = this.input.keyboard.addKey('SPACE')
- 
+
     if (keyLeftObj.isDown === true) {
       this.ship.x -= 15
       if (this.ship.x < 0) {
-        this.ship.x = 0
+        this.ship.x = 1920
       }
     }
 
     if (keyRightObj.isDown === true) {
       this.ship.x += 15
       if (this.ship.x > 1920) {
-        this.ship.x = 1920
+        this.ship.x = 0
+      }
+    }
+
+    if (keyUpObj.isDown === true) {
+      this.ship.y -= 15
+      if (this.ship.y > 1920) {
+        this.ship.y = 1920
+      }
+    }
+
+    if (keyDownObj.isDown === true) {
+      this.ship.y += 15
+      if (this.ship.y < 0) {
+        this.ship.y = 0
       }
     }
     if (keySpaceObj.isDown === true) {

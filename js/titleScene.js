@@ -34,7 +34,7 @@ class TitleScene extends Phaser.Scene {
     this.titleSceneBackgroundImage.y = 1080 / 2
 
     // Create the title text for the title scene
-    this.titleSceneText = this.add.text(1920 / 2, (1080 / 2) + 350, 'Space Aliens', this.titleSceneTextStyle).setOrigin(0.5)
+    this.titleSceneText = this.add.text(1920 / 2, (1080 / 2) + 350, 'Shoot the shoe', this.titleSceneTextStyle).setOrigin(0.5)
   }
 
   update(time, delta) {
